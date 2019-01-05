@@ -2,8 +2,8 @@
 
 Built with Apache PDFBox and Java Swing.
 
-To compile
-	mvn compile
+To compile 
+    mvn compile
 
-To run
-	mvn exec:java
+To run 
+    mvn exec:java
