@@ -3,7 +3,11 @@
 Built with Apache PDFBox and Java Swing.
 
 To compile  
-    mvn compile
+```
+mvn compile
+```
 
 To run  
-    mvn exec:java
+```
+mvn exec:java
+```
