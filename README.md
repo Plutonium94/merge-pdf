@@ -1,6 +1,6 @@
 # merge-pdf
 
-Built with Apache PDFBox and Java Swing.
+Built with **Apache PDFBox** and **Java Swing**.
 
 To compile  
 ```
