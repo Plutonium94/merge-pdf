@@ -10,6 +10,8 @@ import java.util.function.Function;
 
 public class PDFMerger {
 
+	public static final String DEFAULT_MERGED_FILENAME = "./target/resultat.pdf";
+
 	public static PDDocument merge(PDDocument[] documents) {
 		PDDocument res = new PDDocument();
 		for(PDDocument doc : documents) {
@@ -48,5 +50,9 @@ public class PDFMerger {
 		return false;
 	}
 
+	public static boolean mergeInto(String[] inputFilePaths) throws IOException {
+		return mergeInto(DEFAULT_MERGED_FILENAME, inputFilePaths);
+	}
+ 
 
 }

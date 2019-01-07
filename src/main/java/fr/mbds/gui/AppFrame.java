@@ -1,5 +1,7 @@
 package fr.mbds.gui;
 
+import fr.mbds.PDFMerger;
+
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
@@ -7,7 +9,8 @@ import java.util.Arrays;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.List;
-import fr.mbds.PDFMerger;
+import java.io.IOException;
+
 
 public class AppFrame extends JFrame {
 
@@ -15,6 +18,8 @@ public class AppFrame extends JFrame {
 	private JButton mergeButton = new JButton("Merge");
 	private JPanel panel = new JPanel();
 	private JLabel messageLabel = new JLabel();
+
+	private FileChooserGroupPanel fileChooserGroup = new FileChooserGroupPanel();
 
 	private static final String CTRL_W_PRESSED = "ctrl+w typed";
 
@@ -24,11 +29,13 @@ public class AppFrame extends JFrame {
 		setTitle("PDF Merger");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		panel.add(new JLabel("Choose file to be added"));
-		panel.add(new FileChooserPanel());
+		panel.add(fileChooserGroup);
+		panel.validate();
 		add(panel, BorderLayout.CENTER);
 		setupSouth();
 		setListeners();
 		setVisible(true);
+		System.out.println(fileChooserGroup);
 	}
 
 	private void setupSouth()  {
@@ -52,13 +59,14 @@ public class AppFrame extends JFrame {
 		});
 
 		mergeButton.addActionListener((ae)-> {
-			/*System.out.println(AppFrame.this.getAllComponents());
+
+			System.out.println(Arrays.toString(fileChooserGroup.getAllFileNames()));
 			try {
-				boolean mergeRes = PDFMerger.merge();
+				boolean mergeRes = PDFMerger.mergeInto(fileChooserGroup.getAllFileNames());
 				messageLabel.setText("Merge " + ((mergeRes)?"":"un") + "successful");
 			} catch(IOException ioe) {
 				messageLabel.setText(ioe.getMessage());
-			}*/
+			}
 		});
 
 

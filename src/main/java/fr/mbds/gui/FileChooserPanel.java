@@ -13,10 +13,13 @@ public class FileChooserPanel extends JPanel {
 	private JFileChooser fileChooser = new JFileChooser(".");
 	private JTextField chosenPathField = new JTextField(15);
 	private JButton fileOpenButton = new JButton("...");
-	private JButton anotherFileButton = new JButton("+");
+	private JButton anotherFileButton = new JButton("+"); 
 
-	public FileChooserPanel() {
+	private FileChooserGroupPanel fileChooserGroup;
 
+	public FileChooserPanel(FileChooserGroupPanel fcg) {
+		super();
+		fileChooserGroup = fcg;
 		fileChooser.setFileFilter(new FileNameExtensionFilter(".pdf files only", "pdf", "PDF"));
 
 		anotherFileButton.setEnabled(false);
@@ -35,9 +38,11 @@ public class FileChooserPanel extends JPanel {
 
 		anotherFileButton.addActionListener((ae)->{
 			if(selectedFile != null) {
-				Container parentContainer = FileChooserPanel.this.getParent();
+				/*Container parentContainer = FileChooserPanel.this.getParent();
 				parentContainer.add(new FileChooserPanel());
-				parentContainer.validate();
+				parentContainer.validate();*/
+				fileChooserGroup.add(new FileChooserPanel(fileChooserGroup));
+				System.out.println(fileChooserGroup.getNumberOfFileChoosers());
 			}
 		});
 
@@ -51,8 +56,11 @@ public class FileChooserPanel extends JPanel {
 				anotherFileButton.setEnabled(! "".equals(chosenPathField.getText()));
 			}
 		});
+	}
 
 
+	FileChooserPanel() {
+		this(null);
 	}
 
 
