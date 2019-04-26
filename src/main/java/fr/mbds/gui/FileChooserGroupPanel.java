@@ -1,9 +1,11 @@
 package fr.mbds.gui;
 
 import javax.swing.*;
+import javax.swing.border.*;
 import java.util.*;
 import java.awt.*;
 import java.util.List;
+import java.io.File;
 
 
 public class FileChooserGroupPanel extends JPanel {
@@ -13,13 +15,18 @@ public class FileChooserGroupPanel extends JPanel {
 	public FileChooserGroupPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.add(new FileChooserPanel(this));
+		// this.setBorder(new EmptyBorder(0, this.getWidth(), this.getHeight(), 0));
+		setMaximumSize(getPreferredSize());
 
+		System.out.println(getWidth() + ", " + getHeight());
 	}
 
 	public void add(FileChooserPanel fcp) {
 		super.add(fcp);
 		fileChooserPanels.add(fcp);
+		setMaximumSize(getPreferredSize());
 		revalidate();
+		System.out.println(getWidth() + ", " + getHeight());
 	}
 
 	public void remove(FileChooserPanel fcp) {
@@ -32,6 +39,16 @@ public class FileChooserGroupPanel extends JPanel {
 			res.add(fcp.getSelectedFile().getAbsolutePath());
 		}
 		return res.toArray(new String[0]);
+	}
+
+	public File getFileAt(int i) {
+		if(i < 0 || i >= fileChooserPanels.size()) { return null; }
+		return fileChooserPanels.get(i).getSelectedFile();
+	}
+
+	public File getFirstFileDirectory() {
+		if(fileChooserPanels.isEmpty()) { return null; }
+		return fileChooserPanels.get(0).getSelectedFile().getParentFile();
 	}
 
 	public int getNumberOfFileChoosers() {

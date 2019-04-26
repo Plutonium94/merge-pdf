@@ -10,16 +10,20 @@ import java.util.Stack;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
+import java.io.File;
 
 
 public class AppFrame extends JFrame {
 
 
 	private JButton mergeButton = new JButton("Merge");
-	private JPanel panel = new JPanel();
 	private JLabel messageLabel = new JLabel();
+	/** The central panel occupying the BorderLayout.CENTER */
+	private JPanel panel = new JPanel();
 
 	private FileChooserGroupPanel fileChooserGroup = new FileChooserGroupPanel();
+
+	private SaveFolderChooserPanel saveFolderChooser = new SaveFolderChooserPanel(fileChooserGroup);
 
 	private static final String CTRL_W_PRESSED = "ctrl+w typed";
 
@@ -27,15 +31,23 @@ public class AppFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setSize(600,600);
 		setTitle("PDF Merger");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		panel.add(new JLabel("Choose file to be added"));
-		panel.add(fileChooserGroup);
-		panel.validate();
-		add(panel, BorderLayout.CENTER);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setupCenter();
 		setupSouth();
 		setListeners();
 		setVisible(true);
 		System.out.println(fileChooserGroup);
+	}
+
+	private void setupCenter() {
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setMaximumSize(panel.getPreferredSize());
+		panel.add(new JLabel("Choose file to be added"));
+		panel.add(fileChooserGroup);
+		panel.add(new JLabel("Choose save file location"));
+		panel.add(saveFolderChooser);
+		panel.validate();
+		add(panel, BorderLayout.CENTER);
 	}
 
 	private void setupSouth()  {
@@ -47,6 +59,8 @@ public class AppFrame extends JFrame {
 
 	private void setListeners() {
 		JRootPane rootPane = this.getRootPane();
+
+		/* Close on Ctrl + W */
 		InputMap im = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		im.put(KeyStroke.getKeyStroke(new Character('W'), InputEvent.CTRL_DOWN_MASK, false), CTRL_W_PRESSED);
 		ActionMap am = rootPane.getActionMap();
@@ -58,11 +72,14 @@ public class AppFrame extends JFrame {
 			}
 		});
 
+		/* merge PDF files */
 		mergeButton.addActionListener((ae)-> {
 
 			System.out.println(Arrays.toString(fileChooserGroup.getAllFileNames()));
 			try {
-				boolean mergeRes = PDFMerger.mergeInto(fileChooserGroup.getAllFileNames());
+				String destination = saveFolderChooser.getSelectedFile() + File.separator + "merged.pdf";
+				System.out.println(destination);
+				boolean mergeRes = PDFMerger.mergeInto(destination, fileChooserGroup.getAllFileNames());
 				messageLabel.setText("Merge " + ((mergeRes)?"":"un") + "successful");
 			} catch(IOException ioe) {
 				messageLabel.setText(ioe.getMessage());

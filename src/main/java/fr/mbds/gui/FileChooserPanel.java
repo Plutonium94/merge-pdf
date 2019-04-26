@@ -7,11 +7,8 @@ import java.awt.event.*;
 import java.io.*;
 
 
-public class FileChooserPanel extends JPanel {
+public class FileChooserPanel extends AbstractFileChooserPanel {
 
-	private File selectedFile = null;
-	private JFileChooser fileChooser = new JFileChooser(".");
-	private JTextField chosenPathField = new JTextField(15);
 	private JButton fileOpenButton = new JButton("...");
 	private JButton anotherFileButton = new JButton("+"); 
 
@@ -20,53 +17,48 @@ public class FileChooserPanel extends JPanel {
 	public FileChooserPanel(FileChooserGroupPanel fcg) {
 		super();
 		fileChooserGroup = fcg;
-		fileChooser.setFileFilter(new FileNameExtensionFilter(".pdf files only", "pdf", "PDF"));
+		setFileFilter(new FileNameExtensionFilter(".pdf files only", "pdf", "PDF"));
 
 		anotherFileButton.setEnabled(false);
 		// add(fileChooser);
-		add(chosenPathField);
+		// add(chosenPathField);
 		add(fileOpenButton);
 		add(anotherFileButton);
 		fileOpenButton.addActionListener((ae)->{
-			int fcDialogRes = fileChooser.showDialog(null, "Add to be merged");
+			JFileChooser fc = getFileChooser();
+			int fcDialogRes = fc.showDialog(null, "Add to be merged");
 			if(fcDialogRes == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-				chosenPathField.setText(selectedFile.getAbsolutePath());
+				setSelectedFile(fc.getSelectedFile());
+				// chosenPathField.setText(selectedFile.getAbsolutePath());
 				anotherFileButton.setEnabled(true);
 			}
 		});
 
 		anotherFileButton.addActionListener((ae)->{
-			if(selectedFile != null) {
+			if(isSelected()) {
 				/*Container parentContainer = FileChooserPanel.this.getParent();
 				parentContainer.add(new FileChooserPanel());
 				parentContainer.validate();*/
-				fileChooserGroup.add(new FileChooserPanel(fileChooserGroup));
+				FileChooserPanel nextFileChooserPanel = new FileChooserPanel(fileChooserGroup);
+				fileChooserGroup.add(nextFileChooserPanel);
+				System.out.println(getSelectedFile().getParentFile());
+				nextFileChooserPanel.setCurrentDirectory(getSelectedFile().getParentFile());
 				System.out.println(fileChooserGroup.getNumberOfFileChoosers());
 			}
 		});
 
-		chosenPathField.addKeyListener(new KeyAdapter() {
+		addKeyListener(new KeyAdapter() {
 
 			/** if chosen file field is not empty enable button,
 			* disable otherwise
 			*/
 			@Override
 			public void keyPressed(KeyEvent ke) {
-				anotherFileButton.setEnabled(! "".equals(chosenPathField.getText()));
+				anotherFileButton.setEnabled(! isSelected());
 			}
 		});
 	}
 
-
-	FileChooserPanel() {
-		this(null);
-	}
-
-
-	File getSelectedFile() {
-		return selectedFile;
-	}
 
 
 }
